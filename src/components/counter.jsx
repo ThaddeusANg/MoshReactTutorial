@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 
 class Counter extends Component {
+  // props is what is passed to a component (input to a component) STRICTLY INPUT CANNOT MODIFY
+  // if you need to modify the input, put the input into the state, this guarantees that if we need to read the original input, it's available
+  // state is local to the component, state can be optional, it is possible to pass all the data through props
   state = {
-    count: 0,
+    value: this.props.counter.value,
+    counter: this.props.counter,
+    HandleDelete: this.props.HandleDelete,
     imageUrl: "https://picsum.photos/200",
     imageCaption: "random 200 pixel picture",
     tags: [
@@ -13,7 +18,7 @@ class Counter extends Component {
     emptyTags: []
   };
 
-  // creating the event handler as a function is cleaner than manually binding an event to this
+  // creating the event handler as a function is cleaner than manually binding an event to this, but is experimental
   //   constructor() {
   //     super();
   //     console.log(this.state);
@@ -36,40 +41,55 @@ class Counter extends Component {
     return output;
   }
 
-  handleIncrement = () => {
-    this.state.count++;
+  TriggerIncrement = val => {
+    console.log(val);
+    this.setState({ value: this.state.value + 1 });
     console.log("Increment Clicked");
   };
 
+  TriggerClear = ID => {
+    this.clearValue();
+    this.props.HandleDelete(ID);
+  };
+
+  clearValue = () => {
+    console.log("Clear Clicked");
+    this.setState({ value: 0 });
+  };
+
   render() {
+    console.log(this.props);
     return (
-      <React.Fragment>
-        <div>
-          <img src={this.state.imageUrl} alt={this.state.imageCaption} />
-        </div>
+      <div>
         <span style={{ fontSize: "2em" }} className={this.getBadgeClasses()}>
           {this.formatCount()}
         </span>
         <button
-          onClick={this.handleIncrement}
-          className="btn btn-secondary btn-sm"
+          onClick={() => this.TriggerIncrement({ propertyA: "test" })}
+          className="btn btn-secondary btn-sm m-2"
         >
           Increment
         </button>
+        <button
+          className="btn btn-danger btn-sm m2"
+          onClick={() => this.TriggerClear(this.state.counter.ID)}
+        >
+          Clear
+        </button>
         {this.renderTags(this.state.tags)}
-      </React.Fragment>
+      </div>
     );
   }
 
   getBadgeClasses() {
     let classes = "badge m-2 ";
-    classes += this.state.count === 0 ? "badge-warning" : "badge-primary";
+    classes += this.state.value === 0 ? "badge-warning" : "badge-primary";
     return classes;
   }
 
   formatCount() {
-    const { count } = this.state;
-    return count === 0 ? "Zero" : count;
+    const { value } = this.state;
+    return value === 0 ? "Zero" : value;
   }
 }
 
