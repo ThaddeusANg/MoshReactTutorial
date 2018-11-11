@@ -2,30 +2,23 @@ import React, { Component } from "react";
 import Counter from "./counter";
 
 class Counters extends Component {
-  state = {
-    counters: [
-      { ID: 1, value: 3, Name: "productA" },
-      { ID: 2, value: 4, Name: "productB" },
-      { ID: 3, value: 5, Name: "productC" },
-      { ID: 4, value: 6, Name: "productD" }
-    ]
-  };
-
-  HandleDelete = ID => {
-    const counters = this.state.counters.filter(counter => counter.ID !== ID);
-    this.setState({ counters: counters });
-    console.log("Delete Event Handled for: " + ID);
-  };
-
   render() {
     return (
       <div>
-        {this.state.counters.map(counter => (
+        <button
+          onClick={this.props.HandleReset}
+          className="btn btn-primary btn-sm m-2"
+        >
+          Reset
+        </button>
+
+        {this.props.counters.map(counter => (
           // this is passed to the children in the this.props property
           <Counter
             key={counter.ID}
             counter={counter}
-            HandleDelete={this.HandleDelete}
+            HandleDelete={this.props.HandleDelete}
+            HandleUpdate={this.props.HandleUpdate}
           >
             <h4>
               #{counter.ID}: {counter.Name}
